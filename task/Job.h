@@ -3,8 +3,6 @@
 //  task
 //
 //  Created by Porter, Scott on 2/01/2016.
-//  Copyright © 2016 Porter, Scott. All rights reserved.
-//
 
 #pragma once
 

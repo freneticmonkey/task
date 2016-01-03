@@ -3,7 +3,6 @@
 //  task
 //
 //  Created by Porter, Scott on 30/12/2015.
-//  Copyright © 2015 Porter, Scott. All rights reserved.
 //
 
 #include <iostream>
