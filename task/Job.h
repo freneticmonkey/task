@@ -8,20 +8,20 @@
 
 namespace JobSystem
 {
-    struct Job;
-    
-    typedef void (*JobFunction)(Job*);//, const void*);
-    Job* GetJob();
-    void Execute(Job* job);
-    void Finish(Job* job);
-    
-    struct Job
-    {
-        JobFunction function;
-        Job* parent;
-        std::atomic<int> unfinishedJobs;
-        char padding[8];
-    };
-    
+	struct Job;
+	
+	typedef void (*JobFunction)(Job*);//, const void*);
+	Job* GetJob();
+	void Execute(Job* job);
+	void Finish(Job* job);
+	
+	struct Job
+	{
+		JobFunction function;
+		Job* parent;
+		std::atomic<int> unfinishedJobs;
+		char padding[8];
+	};
+	
 
 }

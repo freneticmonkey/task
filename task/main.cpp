@@ -20,10 +20,10 @@ void root_job(JobSystem::Job* job)// , const void *)
 }
 
 int main(int argc, const char * argv[]) {
-    
-    // Main Thread
+	
+	// Main Thread
 	std::cout << "Starting Task Scheduler" << std::endl;
-    
+	
 	JobSystem::Setup();
 
 	std::cout << "Main Thread: " << std::this_thread::get_id() << std::endl;
@@ -62,5 +62,5 @@ int main(int argc, const char * argv[]) {
 	std::cout << "Finished." << std::endl;
 	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
 
-    return 0;
+	return 0;
 }
