@@ -122,7 +122,7 @@ namespace JobSystem
 	
 	void Execute(Job* job)
 	{
-		(job->function)(job);//, job->data); // Pass data here.
+		job->function(job);
 		Finish(job);
 	}
 	

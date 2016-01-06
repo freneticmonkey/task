@@ -6,17 +6,36 @@
 //
 
 #include <iostream>
+#include <functional>
+#include <string>
 
 #include "JobSystem.h"
 
-void empty_job(JobSystem::Job* job)// , const void *)
+using namespace std::literals;
+
+class MyData : public JobSystem::Data
+{
+public:
+	typedef std::function<void(JobSystem::Job*, MyData*)> MyDataFunction;
+
+	MyData() : Data() {}
+	virtual ~MyData() {}
+	std::string Hello() { return std::string("Hello"); }
+
+	JobSystem::JobFunction Bind(const MyDataFunction &func)
+	{
+		return std::bind(func, std::placeholders::_1, this);
+	}
+};
+
+void empty_job(JobSystem::Job* job, MyData* data)
 {
 
 }
 
-void root_job(JobSystem::Job* job)// , const void *)
+void root_job(JobSystem::Job* job, MyData* data)
 {
-	std::cout << "Root Job" << std::endl;
+	std::cout << "Root Job: " << data->Hello() << std::endl;
 }
 
 int main(int argc, const char * argv[]) {
@@ -30,18 +49,21 @@ int main(int argc, const char * argv[]) {
 
 	unsigned int N = 65000;
 
+	MyData test;
+
 	for (int j = 0; j < 10; j++)
 	{
 		std::cout << "Enqueuing jobs: " << N << std::endl;
 
 		// Setup Job System for new frame
 		JobSystem::StartFrame();
-
-		JobSystem::Job* root = JobSystem::CreateJob(&root_job);
-
+		
+		JobSystem::Job* root = JobSystem::CreateJob(test.Bind(root_job));
+		
 		for (unsigned int i = 0; i < N; ++i)
 		{
-			JobSystem::Job* job = JobSystem::CreateJobAsChild(root, &empty_job);
+			JobSystem::Job* job = JobSystem::CreateJobAsChild(root, test.Bind(empty_job));
+			
 			JobSystem::Run(job);
 		}
 
@@ -54,13 +76,13 @@ int main(int argc, const char * argv[]) {
 		// Run Frame Cleanup
 		JobSystem::EndFrame();
 
-		std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+		std::this_thread::sleep_for(1000ms);
 	}
 	
 	JobSystem::Shutdown();
 	
 	std::cout << "Finished." << std::endl;
-	std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+	std::this_thread::sleep_for(1000ms);
 
 	return 0;
 }
