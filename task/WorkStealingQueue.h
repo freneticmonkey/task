@@ -46,8 +46,7 @@ namespace JobSystem
 					return job;
 				}
 				
-                if ( m_top.compare_exchange_weak(t, t+1) )
-//				if ( _InterlockedCompareExchange(&m_top, t+1, t) != t ) // Stupid WIN only CAS function
+                if ( !m_top.compare_exchange_weak(t, t+1) )
 				{
 					// the last job was stolen by another thread
 					job = nullptr;
@@ -71,8 +70,7 @@ namespace JobSystem
 			if ( t < b )
 			{
 				Job* job = m_jobs[t & MASK];
-                if ( m_top.compare_exchange_weak(t, t+1) )
-//				if ( _InterlockedCompareExchange(&m_top, t+1, t) != t ) // Stupid WIN only CAS function
+                if ( !m_top.compare_exchange_weak(t, t+1) )
 				{
 					// Another thread has modified the job queue
 					return nullptr;
