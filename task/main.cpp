@@ -39,7 +39,7 @@ int main(int argc, const char * argv[]) {
 
 	std::cout << "Main Thread: " << std::this_thread::get_id() << std::endl;
 
-	unsigned int N = 1024;
+	unsigned int N = 65000;
 
 	MyData test;
 
