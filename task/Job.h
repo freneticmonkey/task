@@ -14,19 +14,18 @@ namespace JobSystem
 	
 	typedef std::function<void(Job*)> JobFunction;
 
+    template<class T>
 	class Data
 	{
 	public:
-		//typedef std::function<void(JobSystem::Job*, Data*)> DataFunction;
+		typedef std::function<void(JobSystem::Job*, T*)> DataFunction;
 
 		virtual ~Data() {};
 
-		/*
 		JobFunction Bind(const DataFunction &func)
 		{
-			return std::bind(func, std::placeholders::_1, this);
+			return std::bind(func, std::placeholders::_1, reinterpret_cast<T*>(this));
 		}
-		*/
 	};
 
 	Job* GetJob();

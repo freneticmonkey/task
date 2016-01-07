@@ -11,21 +11,13 @@
 
 #include "JobSystem.h"
 
-using namespace std::literals;
-
-class MyData : public JobSystem::Data
+class MyData : public JobSystem::Data<MyData>
 {
 public:
-	typedef std::function<void(JobSystem::Job*, MyData*)> MyDataFunction;
-
+	
 	MyData() : Data() {}
 	virtual ~MyData() {}
 	std::string Hello() { return std::string("Hello"); }
-
-	JobSystem::JobFunction Bind(const MyDataFunction &func)
-	{
-		return std::bind(func, std::placeholders::_1, this);
-	}
 };
 
 void empty_job(JobSystem::Job* job, MyData* data)
@@ -47,7 +39,7 @@ int main(int argc, const char * argv[]) {
 
 	std::cout << "Main Thread: " << std::this_thread::get_id() << std::endl;
 
-	unsigned int N = 65000;
+	unsigned int N = 1024;
 
 	MyData test;
 
@@ -75,14 +67,15 @@ int main(int argc, const char * argv[]) {
 
 		// Run Frame Cleanup
 		JobSystem::EndFrame();
-
-		std::this_thread::sleep_for(1000ms);
+        
+        std::cout << "Cycle " << j << " Finished.  Sleeping." << std::endl;
+        sleep(1);
 	}
 	
 	JobSystem::Shutdown();
 	
 	std::cout << "Finished." << std::endl;
-	std::this_thread::sleep_for(1000ms);
+    sleep(1);
 
 	return 0;
 }

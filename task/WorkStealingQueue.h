@@ -6,11 +6,11 @@
 //
 
 #pragma once
+
+#include <atomic>
+
 #include "Job.h"
 
-#if __ENVIRONMENT_MAC_OS_X_VERSION_MIN_REQUIRED__ >= 1050
-#include <libkern/OSAtomic.h>
-#endif
 
 namespace JobSystem
 {
@@ -46,7 +46,8 @@ namespace JobSystem
 					return job;
 				}
 				
-				if ( _InterlockedCompareExchange(&m_top, t+1, t) != t ) // Stupid WIN only CAS function
+                if ( m_top.compare_exchange_weak(t, t+1) )
+//				if ( _InterlockedCompareExchange(&m_top, t+1, t) != t ) // Stupid WIN only CAS function
 				{
 					// the last job was stolen by another thread
 					job = nullptr;
@@ -70,7 +71,8 @@ namespace JobSystem
 			if ( t < b )
 			{
 				Job* job = m_jobs[t & MASK];
-				if ( _InterlockedCompareExchange(&m_top, t+1, t) != t ) // Stupid WIN only CAS function
+                if ( m_top.compare_exchange_weak(t, t+1) )
+//				if ( _InterlockedCompareExchange(&m_top, t+1, t) != t ) // Stupid WIN only CAS function
 				{
 					// Another thread has modified the job queue
 					return nullptr;
@@ -88,8 +90,8 @@ namespace JobSystem
 		
 	private:
 		Job* m_jobs[NUMBER_OF_JOBS];
-		long m_bottom;
-		long m_top;
+		std::atomic<long> m_bottom;
+        std::atomic<long> m_top;
 	};
 	
 }
