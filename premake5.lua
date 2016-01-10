@@ -19,6 +19,9 @@ project "task"
 
    files { "task/**.h", "test/**.cpp" }
    
+   filter "platforms:macosx"
+      buildoptions "-std=c++11 -stdlib=libc++"
+
    filter "configurations:Debug"
       flags { "Symbols" }
       defines { "_DEBUG" }
