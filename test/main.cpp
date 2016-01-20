@@ -8,6 +8,7 @@
 #include <iostream>
 #include <functional>
 #include <string>
+#include <chrono>
 
 #include "JobSystem.h"
 
@@ -52,30 +53,38 @@ int main(int argc, const char * argv[]) {
 		
 		JobSystem::Job* root = JobSystem::CreateJob(test.Bind(root_job));
 		
-		for (unsigned int i = 0; i < N; ++i)
+		if (root)
 		{
-			JobSystem::Job* job = JobSystem::CreateJobAsChild(root, test.Bind(empty_job));
-			
-			JobSystem::Run(job);
+			for (unsigned int i = 0; i < N; ++i)
+			{
+				JobSystem::Job* job = JobSystem::CreateJobAsChild(root, test.Bind(empty_job));
+
+				JobSystem::Run(job);
+			}
+
+			// Run the root job
+			JobSystem::Run(root);
+
+			// Wait for the children jobs to finish
+			JobSystem::Wait(root);
+
+			// Run Frame Cleanup
+			JobSystem::EndFrame();
+
+			std::cout << "Cycle " << j << " Finished.  Sleeping." << std::endl;
+
 		}
-
-		// Run the root job
-		JobSystem::Run(root);
-
-		// Wait for the children jobs to finish
-		JobSystem::Wait(root);
-
-		// Run Frame Cleanup
-		JobSystem::EndFrame();
-        
-        std::cout << "Cycle " << j << " Finished.  Sleeping." << std::endl;
-        sleep(1);
+		else
+		{
+			std::cout << "Cycle " << j << " Skipped due to unavailable jobs.  Sleeping." << std::endl;
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
 	
 	JobSystem::Shutdown();
 	
 	std::cout << "Finished." << std::endl;
-    sleep(1);
+	std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
 	return 0;
 }
