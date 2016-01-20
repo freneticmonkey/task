@@ -34,6 +34,7 @@ namespace JobSystem
 	
 	struct Job
 	{
+		Job() : unfinishedJobs(0) {}
 		JobFunction function;
 		Job* parent;
 		std::atomic<int> unfinishedJobs;
