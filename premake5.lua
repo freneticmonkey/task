@@ -17,7 +17,7 @@ project "task"
    -- vpaths { ["include"] = "**.h" }
    -- vpaths { ["source"] = "**.cpp" }
 
-   files { "task/**.h", "test/**.cpp" }
+   files { "task/**.h", "task/**.cpp", "test/**.cpp" }
    
    filter "platforms:macosx"
       buildoptions "-std=c++11 -stdlib=libc++"
